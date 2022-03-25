@@ -145,7 +145,7 @@ check_package(){
 	do
 		if ! dpkg -l "$package_name" &> /dev/null; then
 			echo "Installing $package_name"
-			apt-get install "$package_name"
+			apt-get -y install "$package_name"
 			nothing_installed=0
 		fi
 	done
@@ -202,9 +202,9 @@ then
 			echo -e "\e[31mYou need iptables 1.6.0+. Please install manually. Aborting.\e[0m" >&2
 			echo "Find latest iptables at http://www.netfilter.org/projects/iptables/downloads.html" >&2
 			echo "Commands to install iptables 1.6.0:" >&2
-                        echo "apt-get install iptables/unstable libxtables11/unstable" >&2
+                        echo "apt-get -y install iptables/unstable libxtables11/unstable" >&2
                         echo "... or compile from source as shown below:" >&2
-			echo -e "\e[34mapt-get install dh-autoreconf bison flex
+			echo -e "\e[34mapt-get -y install dh-autoreconf bison flex
 cd /tmp
 curl http://www.netfilter.org/projects/iptables/files/iptables-1.6.0.tar.bz2 | tar xj
 cd iptables-1.6.0
