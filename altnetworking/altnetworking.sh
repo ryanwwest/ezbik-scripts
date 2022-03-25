@@ -105,6 +105,27 @@ show_help() {
         echo -e "\e[1m-h, --help\e[0m          This help."
 }
 
+
+# Check the presence of required system packages
+check_package(){
+        nothing_installed=1
+        for package_name in "$@"
+        do
+                if ! dpkg -l "$package_name" &> /dev/null; then
+                        echo "Installing $package_name"
+                        apt-get -y install "$package_name"
+                        nothing_installed=0
+                fi
+        done
+        return $nothing_installed
+}
+
+# check package now so that even if interface isn't setup up, packages still install first time run
+if check_package cgroupfs-mount  cgroup-tools inetutils-traceroute; then
+   echo "You may want to reboot now. But that's probably not necessary." >&2
+fi
+
+
 config_file_name="$1"
 if [ -f "$config_file_name" ]
 then
@@ -135,22 +156,7 @@ if [ "$init_nb_args" -lt 1 ] || [ "$action" = "help" ] ; then
 	exit 1
 fi
 
-
 # Helper functions
-
-# Check the presence of required system packages
-check_package(){
-	nothing_installed=1
-	for package_name in "$@"
-	do
-		if ! dpkg -l "$package_name" &> /dev/null; then
-			echo "Installing $package_name"
-			apt-get -y install "$package_name"
-			nothing_installed=0
-		fi
-	done
-	return $nothing_installed
-}
 
 # List processes running inside the cgroup
 list_processes(){
